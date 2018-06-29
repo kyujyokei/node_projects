@@ -8,6 +8,9 @@ var {User} = require('./models/user');
 
 var app = express();
 
+// for Heroku deploy, if not on Heroku then uses port 3000
+const port = process.env.PORT || 3000;
+
 app.use(bodyParser.json()); // give this json() function as a middle ware to express, so we can send json to application
 
 app.post('/todos', (req, res) => {
@@ -53,8 +56,8 @@ app.get('/todos/:id', (req, res) => {
 
 });
 
-app.listen(3000, () => {
-    console.log('Starting on port 3000');
+app.listen(port, () => {
+    console.log(`Starting on port ${port}`);
 });
 
 module.exports = {app};
