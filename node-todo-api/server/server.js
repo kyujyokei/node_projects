@@ -1,5 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var {ObjectID} = require('mongodb');
 
 var {mongoose}  = require('./db/mongoose');
 var {Todo} = require('./models/todo');
@@ -21,12 +22,35 @@ app.post('/todos', (req, res) => {
     });
 });
 
+// GET all todos
 app.get('/todos', (req, res) => {
     Todo.find().then((todos) => {
         res.send({todos});
     },  (err) => {
         res.status(400).send({err});
     })
+});
+
+// GET /todos/123
+app.get('/todos/:id', (req, res) => {
+
+    var id = req.params.id;
+
+    if (!ObjectID.isValid(id)){
+        res.status(404).send('ID not valid'); // the ID was not valid (checked by mongoose)
+    }
+
+    Todo.findById(id).then((todo) => {
+        if (!todo) {
+            console.log('Not found');
+            return res.status(404).send({}); // query succeed but found to mathcing result
+        }
+        res.status(200).send({todo});
+    }).catch((err) => {
+        console.log('Error');
+        res.status(400).send({})
+    }); // query got error and failed
+
 });
 
 app.listen(3000, () => {
