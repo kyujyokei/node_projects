@@ -13,8 +13,6 @@ const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json()); // give this json() function as a middle ware to express, so we can send json to application
 
-app.use(express.static(__dirname + '/public')); 
-
 app.post('/todos', (req, res) => {
     var todo = new Todo({
         text: req.body.text
